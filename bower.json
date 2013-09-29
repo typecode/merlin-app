@@ -1,0 +1,17 @@
+{
+    "name": "merlin-app",
+    "version": "0.1.0",
+    "homepage": "https://github.com/typecode/lessutil.git",
+    "authors": [
+        "Andrew Mahon <andrew@typecode.com>",
+        "Lev Kanter <levkanter@gmail.com>"
+    ],
+    "description": "",
+    "license": "MIT",
+    "private": true,
+    "dependencies": {
+        "jquery": "1.10.2",
+        "underscore": "1.5.2",
+        "requirejs": "2.1.8"
+    }
+}
