@@ -4,7 +4,10 @@ define(['jquery'], function($) {
         var self = this, o;
 
         o = $.extend({
-            page: App.get_empty_page(),
+            page: {
+                _features: [],
+                add_feature: $.noop
+            },
             ensure_console: true,
             debug: true
         }, options);
@@ -113,15 +116,6 @@ define(['jquery'], function($) {
             });
         }
         return dummy_console;
-    };
-
-    App.get_empty_page = function() {
-        return {
-            _features: [],
-            add_feature: function(feature) {
-                this._features.push(feature);
-            }
-        };
     };
 
     return App;
