@@ -149,6 +149,9 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
 
     SimplePages.has_path_changed = function(current_components, next_components) {
         var changed = false;
+        if (current_components.length != next_components.length) {
+            return true;
+        }
         $.each(next_components, function(i, component) {
             if (component != current_components[i]) {
                 changed = true;
