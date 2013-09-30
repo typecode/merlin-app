@@ -111,15 +111,13 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
                     callback();
                 }
             },
-            update: function() {
-                var path_components, page_name;
-                path_components = internal.path_components;
-
-                internal.next = path_components.join('/').replace('#', '');
+            update: function(path) {
+                var page_name;
 
                 $.each(o.pages, function(k, page) {
-                    if (internal.next.match(page.route)) {
+                    if (path.match(page.route)) {
                         page_name = k;
+                        internal.next = path;
                         return false;
                     }
                 });
@@ -140,7 +138,7 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
             pushstate: function(e, d) {
                 if (SimplePages.has_path_changed(internal.path_components, d.components)) {
                     internal.path_components = d.components;
-                    fn.update();
+                    fn.update(d.path);
                 }
             }
         };
