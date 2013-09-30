@@ -15,7 +15,7 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
                 }
             },
             page_transition: Merlin.default_step_transition,
-            first_page: null
+            first_step: null
         }, options);
 
         internal = {
@@ -40,7 +40,7 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
                     transition: o.page_transition
                 });
 
-                internal.merlin.show_step(o.first_page);
+                internal.merlin.show_step(o.first_step);
 
                 o.app.events.on(PushstateHelper.event_types.PUSHSTATE_EVENT, handlers.pushstate);
             },
