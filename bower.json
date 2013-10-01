@@ -1,7 +1,7 @@
 {
     "name": "merlin-app",
     "version": "0.1.0",
-    "homepage": "https://github.com/typecode/lessutil.git",
+    "homepage": "https://github.com/typecode/merlin-app.git",
     "authors": [
         "Andrew Mahon <andrew@typecode.com>",
         "Lev Kanter <levkanter@gmail.com>"
