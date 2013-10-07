@@ -15,6 +15,7 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
                 }
             },
             page_transition: Merlin.default_step_transition,
+            page_render: SimplePages.default_page_render,
             first_step: null
         }, options);
 
@@ -33,6 +34,8 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
 
         fn = {
             init: function() {
+                var first_step;
+
                 internal.merlin = new Merlin({
                     name: 'Pages',
                     $e: internal.$e,
@@ -40,9 +43,23 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
                     transition: o.page_transition
                 });
 
-                internal.merlin.show_step(o.first_step);
+                first_step = fn.get_first_step();
+                if (first_step) {
+                    internal.merlin.show_step(first_step);
+                }
 
                 o.app.events.on(PushstateHelper.event_types.PUSHSTATE_EVENT, handlers.pushstate);
+            },
+            get_first_step: function() {
+                var first_step;
+                if (o.first_step) {
+                    return o.first_step;
+                }
+                first_step = internal.$e.data('first-step');
+                if (first_step) {
+                    return first_step;
+                }
+                return null;
             },
             build_merlin_steps: function() {
                 var steps;
@@ -98,18 +115,13 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
                         if ($.isFunction(callback)) {
                             callback(data);
                         } else {
-                            fn.render_page(step, $(data));
+                            fn.render_page(step, data);
                         }
                     }
                 });
             },
-            render_page: function(step, $p, callback) {
-                if ($p) {
-                    step.$e.append($p);
-                }
-                if ($.isFunction(callback)) {
-                    callback();
-                }
+            render_page: function(step, html, callback) {
+                o.page_render.apply(self, arguments);
             },
             update: function(path) {
                 var page_name;
@@ -159,6 +171,15 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
             }
         });
         return changed;
+    };
+
+    SimplePages.default_page_render = function(step, html, callback) {
+        if (html) {
+            step.$e.html(html);
+        }
+        if ($.isFunction(callback)) {
+            callback();
+        }
     };
 
     return SimplePages;
