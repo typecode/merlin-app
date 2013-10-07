@@ -79,9 +79,11 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
                             page.init.apply(this, [me, data]);
                         };
                     } else {
-                        step.init = function(me, data) {
-                            fn.load_page(this);
-                        };
+                        if (!page.autosync_on_visible) {
+                            step.init = function(me, data) {
+                                fn.load_page(this);
+                            };
+                        }
                     }
                     if ($.isFunction(page.visible)) {
                         step.visible = function(me, data) {
@@ -89,7 +91,11 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
                             page.visible.apply(this, [me, data]);
                         };
                     } else {
-                        step.visible = $.noop;
+                        if (page.autosync_on_visible) {
+                            step.visible = function(me, data) {
+                                fn.load_page(this);
+                            };
+                        }
                     }
                     if ($.isFunction(page.finish)) {
                         step.finish = function(me, data) {
@@ -154,6 +160,8 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
                 }
             }
         };
+
+        self.load_page = fn.load_page;
 
         fn.init();
         console.log(internal);
