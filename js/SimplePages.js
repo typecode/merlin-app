@@ -46,6 +46,7 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
                 first_step = fn.get_first_step();
                 if (first_step) {
                     internal.merlin.show_step(first_step);
+                    fn.set_body_class(first_step);
                 }
 
                 o.app.events.on(PushstateHelper.event_types.PUSHSTATE_EVENT, handlers.pushstate);
