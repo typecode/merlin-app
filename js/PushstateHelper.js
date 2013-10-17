@@ -13,7 +13,7 @@ define(['jquery'], function($) {
 
         o = $.extend({
             app: null,
-            use_hash: false
+            use_hash: (window.history && window.history.pushState ? false : true)
         }, options);
 
         internal = {
