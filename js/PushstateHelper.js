@@ -40,8 +40,10 @@ define(['jquery'], function($) {
                     fn.statechange(window.location.pathname);
                 }
             },
-            statechange: function(pathname, data){
+            statechange: function(href, data){
                 var i, path_components, position, _event_data;
+
+                pathname = href.replace(o.base_url, '');
 
                 if (o.use_hash) {
                     pathname = pathname.replace('#', '');
@@ -51,6 +53,7 @@ define(['jquery'], function($) {
 
                 _event_data = {
                     path: pathname,
+                    href: href,
                     components: path_components,
                     data: data ? data : {}
                 };
@@ -79,7 +82,7 @@ define(['jquery'], function($) {
                 if($t.hasClass('js-use-pushstate')){
                     e.stopImmediatePropagation();
                     if(o.use_hash){
-                        window.location.hash = _href;
+                        window.location.hash = _href.replace(o.base_url, '');
                     } else {
                         history.pushState(null, null, _href);
                     }

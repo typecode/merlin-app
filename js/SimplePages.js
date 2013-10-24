@@ -8,7 +8,6 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/App', 'merlin-app/PushstateHe
             app: null,
             $e: null,
             selector: '',
-            base_url: '',
             pages: {
                 'page_name': {
                     route: '/',
@@ -131,13 +130,14 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/App', 'merlin-app/PushstateHe
             render_page: function(step, html, callback) {
                 o.page_render.apply(self, arguments);
             },
-            update: function(path) {
+            update: function(d) {
                 var page_name;
 
                 $.each(o.pages, function(k, page) {
-                    if (path.replace(o.base_url, '').match(page.route)) {
+                    //if (path.replace(o.base_url, '').match(page.route)) {
+                    if (d.path.match(page.route)) {
                         page_name = k;
-                        internal.next = path;
+                        internal.next = d.href;
                         return false;
                     }
                 });
@@ -158,7 +158,7 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/App', 'merlin-app/PushstateHe
             pushstate: function(e, d) {
                 if (SimplePages.has_path_changed(internal.path_components, d.components)) {
                     internal.path_components = d.components;
-                    fn.update(d.path);
+                    fn.update(d);
                 }
             }
         };
