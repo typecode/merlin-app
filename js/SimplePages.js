@@ -1,4 +1,4 @@
-define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($, Merlin, PushstateHelper) {
+define(['jquery', 'merlin-app/Merlin', 'merlin-app/App', 'merlin-app/PushstateHelper', 'globals'], function($, Merlin, App, PushstateHelper, globals) {
 
     var SimplePages = function(options) {
 
@@ -8,6 +8,7 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
             app: null,
             $e: null,
             selector: '',
+            base_url: '',
             pages: {
                 'page_name': {
                     route: '/',
@@ -16,7 +17,8 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
             },
             page_transition: Merlin.default_step_transition,
             page_render: SimplePages.default_page_render,
-            first_step: null
+            first_step: null,
+            name: 'Pages'
         }, options);
 
         internal = {
@@ -29,7 +31,8 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
         };
 
         elements = {
-            body: $('body')
+            body: $('body'),
+            window: $(window),
         };
 
         fn = {
@@ -46,10 +49,15 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
                 first_step = fn.get_first_step();
                 if (first_step) {
                     internal.merlin.show_step(first_step);
-                    fn.set_body_class(first_step);
                 }
 
                 o.app.events.on(PushstateHelper.event_types.PUSHSTATE_EVENT, handlers.pushstate);
+
+                o.app.events.on(App.event_types.FEATURES_INITIALIZED, function(){
+                    globals.elements.window.trigger('pushstate', {
+                        pathname: window.location.href
+                    });
+                });
             },
             get_first_step: function() {
                 var first_step;
@@ -66,14 +74,7 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
                 var steps;
                 steps = {};
                 $.each(o.pages, function(k, page) {
-                    var step = {
-                        route: page.route
-                    };
-                    if (page.$e) {
-                        step.$e = page.$e;
-                    } else {
-                        step.selector = page.selector;
-                    }
+                    var step = $.extend({}, page);
                     if ($.isFunction(page.init)) {
                         step.init = function(me, data) {
                             data.pages = self;
@@ -109,14 +110,14 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
                 return steps;
             },
             load_page: function(step, request_options, callback) {
-                if (!internal.next || (internal.next == internal.current)) {
-                    return;
-                }
+                // if (!internal.next || (internal.next == internal.current)) {
+                //     return;
+                // }
                 internal.current = internal.next;
                 $.ajax({
                     url: internal.current,
                     data: $.extend({
-                        pages_partial: true
+                        requesting_merlin: o.name
                     }, request_options || {}),
                     success: function(data) {
                         if ($.isFunction(callback)) {
@@ -134,7 +135,7 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
                 var page_name;
 
                 $.each(o.pages, function(k, page) {
-                    if (path.match(page.route)) {
+                    if (path.replace(o.base_url, '').match(page.route)) {
                         page_name = k;
                         internal.next = path;
                         return false;
