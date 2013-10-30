@@ -8,6 +8,7 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
             app: null,
             $e: null,
             selector: '',
+            pushstatehelper: null,
             pages: {
                 'page_name': {
                     route: '/',
@@ -23,8 +24,8 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
             name: 'mod.Pages',
             $e: (o.$e ? o.$e : $(o.selector)),
             merlin: null,
-            path_components: window.location.pathname.split('/'),
-            current: window.location.pathname,
+            path_components: o.pushstatehelper.get_path_from_window().split('/'),
+            current: o.pushstatehelper.get_path_from_window(),
             next: null
         };
 
@@ -170,6 +171,9 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
 
     SimplePages.has_path_changed = function(current_components, next_components) {
         var changed = false;
+        if (!current_components || !next_components) {
+            return true;
+        }
         if (current_components.length != next_components.length) {
             return true;
         }

@@ -18,12 +18,13 @@ define(['jquery'], function($) {
 
         internal = {
             name: 'mod.PushstateHelper',
-            previous_path: o.use_hash ?
-                window.location.hash.replace('#', '') : window.location.pathname
+            previous_path: null
         };
 
         fn = {
             init: function() {
+                internal.previous_path = fn.get_path_from_window();
+
                 $(document).on('click', '.js-use-pushstate, .js-simulate-pushstate, .js-do-popstate', handlers.doc_click);
 
                 $(window)
@@ -34,10 +35,10 @@ define(['jquery'], function($) {
                 if (o.use_hash) {
                     require(['jquery_migrate', 'hashchange'], function() {
                         $(window).on('hashchange', handlers.hashchange);
-                        fn.statechange(window.location.hash);
+                        fn.statechange(internal.previous_path);
                     });
                 } else {
-                    fn.statechange(window.location.pathname);
+                    fn.statechange(internal.previous_path);
                 }
             },
             statechange: function(pathname, data){
@@ -64,6 +65,12 @@ define(['jquery'], function($) {
                 internal.previous_path = _event_data.path;
             },
 
+            get_path_from_window: function() {
+                if (o.use_hash) {
+                    return window.location.hash.replace('#', '');
+                }
+                return window.location.pathname;
+            },
             get_path_components: function(){
                 return internal.components;
             }
@@ -125,6 +132,7 @@ define(['jquery'], function($) {
             }
         };
 
+        this.get_path_from_window = fn.get_path_from_window;
         this.get_path_components = fn.get_path_components;
 
         fn.init();
