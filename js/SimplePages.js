@@ -15,6 +15,7 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
                     selector: '.page-selector'
                 }
             },
+            page_loading: $.noop,
             page_transition: Merlin.default_step_transition,
             page_render: SimplePages.default_page_render,
             first_step: null
@@ -67,14 +68,8 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
                 var steps;
                 steps = {};
                 $.each(o.pages, function(k, page) {
-                    var step = {
-                        route: page.route
-                    };
-                    if (page.$e) {
-                        step.$e = page.$e;
-                    } else {
-                        step.selector = page.selector;
-                    }
+                    var step = $.extend({}, page);
+
                     if ($.isFunction(page.init)) {
                         step.init = function(me, data) {
                             data.pages = self;
@@ -105,6 +100,7 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
                             page.finish.apply(this, [me, data]);
                         };
                     }
+
                     steps[k] = step;
                 });
                 return steps;
@@ -112,6 +108,9 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
             load_page: function(step, request_options, callback) {
                 if (!internal.next || (internal.next == internal.current)) {
                     return;
+                }
+                if ($.isFunction(o.page_loading)) {
+                    o.page_loading.apply(self, [step]);
                 }
                 internal.current = internal.next;
                 $.ajax({
