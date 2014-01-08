@@ -21,6 +21,9 @@ define(['jquery'], function($) {
         this.events = $({});
         this.contexts = {};
 
+        this._deferred = [];
+        this._is_initializing = true;
+
         this.invoke_feature_set(this.page._features);
         this.page.add_feature = function() {
             self.invoke_feature.apply(self, arguments);
@@ -72,7 +75,14 @@ define(['jquery'], function($) {
         feature_init_callback = function() {
             n_initialized += 1;
             if (n_initialized === n_features) {
-                self.events.trigger(App.event_types.FEATURES_INITIALIZED);
+                if (self._is_initializing) {
+                    self.events.trigger(App.event_types.FEATURES_INITIALIZED);
+                    self._is_initializing = false;
+                    $.each(self._deferred, function(i, fn) {
+                        fn();
+                    });
+                    self._deferred = [];
+                }
                 if ($.isFunction(callback)) {
                     callback();
                 }
@@ -82,6 +92,14 @@ define(['jquery'], function($) {
         $.each(feature_set, function(i, feature) {
             self.invoke_feature(feature, feature_init_callback);
         });
+    };
+
+    App.prototype.defer_feature = function(callback) {
+        if (this._is_initializing) {
+            this._deferred.push(callback);
+        } else {
+            callback();
+        }
     };
 
     App.prototype.new_context = function(name) {
