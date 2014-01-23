@@ -14,6 +14,6 @@
         "underscore": "1.5.2",
         "requirejs": "2.1.8",
         "jquery-migrate": "1.2.1",
-        "jquery-hashchange": "git@github.com:cowboy/jquery-hashchange.git"
+        "jquery-hashchange": "git@github.com:georgekosmidis/jquery-hashchange.git"
     }
 }
