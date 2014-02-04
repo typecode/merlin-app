@@ -76,7 +76,7 @@ define(['jquery'], function($) {
             n_initialized += 1;
             if (n_initialized === n_features) {
                 if (self._is_initializing) {
-                    self.events.trigger(App.event_types.FEATURES_INITIALIZED);
+                    self.events.trigger(self.event_types.FEATURES_INITIALIZED);
                     self._is_initializing = false;
                     $.each(self._deferred, function(i, fn) {
                         fn();
@@ -117,7 +117,7 @@ define(['jquery'], function($) {
         return self.contexts[name];
     };
 
-    App.event_types = {
+    App.prototype.event_types = {
         FEATURES_INITIALIZED: 'app_features_initialized'
     };
 

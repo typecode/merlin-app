@@ -26,7 +26,7 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
             $e: (o.$e ? o.$e : $(o.selector)),
             merlin: null,
             path_components: o.pushstatehelper.get_path_from_window().split('/'),
-            current: o.pushstatehelper.get_path_from_window(),
+            current: null,
             next: null
         };
 
@@ -47,6 +47,7 @@ define(['jquery', 'merlin-app/Merlin', 'merlin-app/PushstateHelper'], function($
 
                 first_step = fn.get_first_step();
                 if (first_step) {
+                    internal.current = o.pushstatehelper.get_path_from_window();
                     internal.merlin.show_step(first_step);
                     fn.set_body_class(first_step);
                 }

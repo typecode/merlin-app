@@ -18,7 +18,8 @@ define(['jquery'], function($) {
 
         internal = {
             name: 'mod.PushstateHelper',
-            previous_path: null
+            previous_path: null,
+            components: []
         };
 
         fn = {
@@ -33,13 +34,14 @@ define(['jquery'], function($) {
                     .on('simulate-pushstate', handlers.simulate_pushstate);
 
                 if (o.use_hash) {
-                    require(['jquery_migrate', 'hashchange'], function() {
+                    require(['hashchange'], function() {
                         $(window).on('hashchange', handlers.hashchange);
-                        fn.statechange(internal.previous_path);
                     });
-                } else {
-                    fn.statechange(internal.previous_path);
                 }
+
+                o.app.events.on(o.app.event_types.FEATURES_INITIALIZED, function(){
+                    fn.statechange(internal.previous_path);
+                });
             },
             statechange: function(pathname, data){
                 var i, path_components, position, _event_data;
@@ -51,8 +53,8 @@ define(['jquery'], function($) {
                 path_components = PushstateHelper.get_path_components(pathname);
 
                 _event_data = {
-                    path: pathname,
-                    components: path_components,
+                    path: pathname.length ? pathname : '/',
+                    components: path_components ? path_components : [],
                     data: data ? data : {}
                 };
 
@@ -145,6 +147,7 @@ define(['jquery'], function($) {
 
     PushstateHelper.get_path_components = function(path){
         var components, position;
+        components = [];
         if(path){
             components = path.split('/');
             position = components.length;
@@ -153,8 +156,8 @@ define(['jquery'], function($) {
                     components.splice(position,1);
                 }
             }
-            return components;
         }
+        return components;
     };
 
     PushstateHelper.get_get_params = function() {
