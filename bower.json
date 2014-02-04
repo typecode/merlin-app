@@ -12,7 +12,7 @@
     "dependencies": {
         "jquery": "1.10.2",
         "underscore": "1.5.2",
-        "requirejs": "2.1.8",
+        "requirejs": "2.1.10",
         "jquery-migrate": "1.2.1",
         "jquery-hashchange": "git@github.com:cowboy/jquery-hashchange.git"
     }
