@@ -13,7 +13,9 @@ define(['jquery'], function($) {
 
         o = $.extend({
             app: null,
-            use_hash: (window.history && window.history.pushState ? false : true)
+            use_hash: (window.history && window.history.pushState ? false : true),
+
+            url_base: null
         }, options);
 
         internal = {
@@ -45,6 +47,10 @@ define(['jquery'], function($) {
             },
             statechange: function(pathname, data){
                 var i, path_components, position, _event_data;
+
+                if(o.url_base){
+                    pathname = pathname.replace(o.url_base, '');
+                }
 
                 if (o.use_hash) {
                     pathname = pathname.replace('#', '');
