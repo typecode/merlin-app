@@ -117,6 +117,14 @@ define(['jquery'], function($) {
         return self.contexts[name];
     };
 
+    App.prototype.get_context = function(name) {
+        var self = this;
+        if (!self.contexts[name]) {
+            self.contexts[name] = {};
+        }
+        return self.contexts[name];
+    };
+
     App.prototype.event_types = {
         FEATURES_INITIALIZED: 'app_features_initialized'
     };
