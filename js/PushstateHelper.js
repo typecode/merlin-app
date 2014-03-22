@@ -92,13 +92,17 @@ define(['jquery'], function($) {
                 _href = $t.attr('href');
                 _data = $t.data();
                 if($t.hasClass('js-use-pushstate')){
-                    e.stopImmediatePropagation();
-                    if(o.use_hash){
-                        window.location.hash = _href;
+                    if (e.metaKey && window.open) {
+                        window.open(_href, '_blank');
                     } else {
-                        history.pushState(null, null, _href);
+                        e.stopImmediatePropagation();
+                        if(o.use_hash){
+                            window.location.hash = _href;
+                        } else {
+                            history.pushState(null, null, _href);
+                        }
+                        fn.statechange(_href, _data);
                     }
-                    fn.statechange(_href, _data);
                 } else if($t.hasClass('js-simulate-pushstate')) {
                     e.stopImmediatePropagation();
                     fn.statechange(_href, _data);
